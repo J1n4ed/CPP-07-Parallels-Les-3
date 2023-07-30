@@ -8,6 +8,7 @@
 #include <list>
 #include <vector>
 #include <future>
+#include <algorithm>
 
 // glob
 
@@ -26,7 +27,21 @@ namespace jinx
 		size_t min_size = 5;
 		auto curr_size = std::distance(startPoint, endPoint);
 
+		if (curr_size <= min_size)
+		{
+			std::for_each(startPoint, endPoint, func);
+		}
+		else
+		{
+			typename std::list<K>::iterator mid = startPoint;
+			std::advance(mid, curr_size / 2);
+			auto ft = std::async(std::launch::deferred, [=]() { jinx::for_each(mid, endPoint, func); });
+			auto remain_size = std::distance(startPoint, mid);
+			std::for_each(startPoint, mid, func);
+			ft.get();
+		}
 
+		/* OLD VERSION
 		if (curr_size <= min_size)
 		{
 			for (int i = 0; i < curr_size; ++i)
@@ -52,6 +67,7 @@ namespace jinx
 
 			ft.get();
 		}
+		*/
 	} // !for_each for std::list
 
 	/*
@@ -67,7 +83,21 @@ namespace jinx
 		size_t min_size = 5;
 		auto curr_size = std::distance(startPoint, endPoint);
 
+		if (curr_size <= min_size)
+		{
+			std::for_each(startPoint, endPoint, func);
+		}
+		else
+		{
+			typename std::vector<K>::iterator mid = startPoint;
+			std::advance(mid, curr_size / 2);
+			auto ft = std::async(std::launch::deferred, [=]() { jinx::for_each(mid, endPoint, func); });
+			auto remain_size = std::distance(startPoint, mid);
+			std::for_each(startPoint, mid, func);
+			ft.get();
+		}
 
+		/* OLD VERSION
 		if (curr_size <= min_size)
 		{
 			for (int i = 0; i < curr_size; ++i)
@@ -93,6 +123,7 @@ namespace jinx
 
 			ft.get();
 		}
+		*/
 		
 	} // !for_each for std::vector
 

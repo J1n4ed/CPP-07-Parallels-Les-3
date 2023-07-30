@@ -40,7 +40,7 @@ int main(int argc, char** argv)
 	clock::duration time_elapsed;
 	std::mt19937 rng;
 	std::uniform_int_distribution<int> dist(1, 9);
-	const int size = 15;
+	const int size = 100;
 
 	// std::cout.precision(4);
 
