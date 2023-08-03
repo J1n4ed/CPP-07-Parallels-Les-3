@@ -13,73 +13,17 @@
 // glob
 
 namespace jinx
-{
+{	
 	/*
-	for_each overload for std::list<T>
+	for_each
 	*/
-	template<typename K>
-	void for_each(typename std::list<K>::iterator itBegin, typename std::list<K>::iterator itEnd, void (&func)(K input))
-	{		
-		// vars
-
-		typename std::list<K>::iterator startPoint = itBegin;
-		typename std::list<K>::iterator endPoint = itEnd;
-		size_t min_size = 5;
-		auto curr_size = std::distance(startPoint, endPoint);
-
-		if (curr_size <= min_size)
-		{
-			std::for_each(startPoint, endPoint, func);
-		}
-		else
-		{
-			typename std::list<K>::iterator mid = startPoint;
-			std::advance(mid, curr_size / 2);
-			auto ft = std::async(std::launch::deferred, [=]() { jinx::for_each(mid, endPoint, func); });
-			auto remain_size = std::distance(startPoint, mid);
-			std::for_each(startPoint, mid, func);
-			ft.get();
-		}
-
-		/* OLD VERSION
-		if (curr_size <= min_size)
-		{
-			for (int i = 0; i < curr_size; ++i)
-			{
-				func(*startPoint);
-				++startPoint;
-			}
-		}
-		else
-		{
-			typename std::list<K>::iterator mid = startPoint;
-			std::advance(mid, curr_size / 2);
-			// auto ft = std::async([=]() { jinx::for_each(mid, endPoint, func); });
-			auto ft = std::async(std::launch::deferred, [=]() { jinx::for_each(mid, endPoint, func); });
-
-			auto remain_size = std::distance(startPoint, mid);
-
-			for (int i = 0; i < remain_size; ++i)
-			{
-				func(*startPoint);
-				++startPoint;
-			}
-
-			ft.get();
-		}
-		*/
-	} // !for_each for std::list
-
-	/*
-	for_each overload for std::vector<T>
-	*/
-	template<typename K>
-	void for_each(typename std::vector<K>::iterator itBegin, typename std::vector<K>::iterator itEnd, void (func)(K input))
+	template<typename Iter, typename K>
+	void for_each_async(Iter itBegin, Iter itEnd, K func)
 	{
 		// vars
 
-		typename std::vector<K>::iterator startPoint = itBegin;
-		typename std::vector<K>::iterator endPoint = itEnd;
+		auto startPoint = itBegin;
+		auto endPoint = itEnd;
 		size_t min_size = 5;
 		auto curr_size = std::distance(startPoint, endPoint);
 
@@ -89,42 +33,43 @@ namespace jinx
 		}
 		else
 		{
-			typename std::vector<K>::iterator mid = startPoint;
+			auto mid = startPoint;
 			std::advance(mid, curr_size / 2);
-			auto ft = std::async(std::launch::deferred, [=]() { jinx::for_each(mid, endPoint, func); });
+			auto ft = std::async(std::launch::async, [=]() { jinx::for_each_async(mid, endPoint, func); });
+			auto remain_size = std::distance(startPoint, mid);
+			std::for_each(startPoint, mid, func);
+			ft.get();
+		}		
+		
+	} // !for_each_async
+
+	/*
+	for_each
+	*/
+	template<typename Iter, typename K>
+	void for_each_deffered(Iter itBegin, Iter itEnd, K func)
+	{
+		// vars
+
+		auto startPoint = itBegin;
+		auto endPoint = itEnd;
+		size_t min_size = 5;
+		auto curr_size = std::distance(startPoint, endPoint);
+
+		if (curr_size <= min_size)
+		{
+			std::for_each(startPoint, endPoint, func);
+		}
+		else
+		{
+			auto mid = startPoint;
+			std::advance(mid, curr_size / 2);
+			auto ft = std::async(std::launch::deferred, [=]() { jinx::for_each_deffered(mid, endPoint, func); });
 			auto remain_size = std::distance(startPoint, mid);
 			std::for_each(startPoint, mid, func);
 			ft.get();
 		}
 
-		/* OLD VERSION
-		if (curr_size <= min_size)
-		{
-			for (int i = 0; i < curr_size; ++i)
-			{
-				func(*startPoint);
-				++startPoint;
-			}
-		}
-		else
-		{
-			typename std::vector<K>::iterator mid = startPoint;
-			std::advance(mid, curr_size / 2);
-			// auto ft = std::async([=]() { jinx::for_each(mid, endPoint, func); });
-			auto ft = std::async(std::launch::deferred, [=]() { jinx::for_each(mid, endPoint, func); });
-
-			auto remain_size = std::distance(startPoint, mid);
-						
-			for (int i = 0; i < remain_size; ++i)
-			{
-				func(*startPoint);
-				++startPoint;
-			}
-
-			ft.get();
-		}
-		*/
-		
-	} // !for_each for std::vector
+	} // !for_each_deffered
 
 } // !jinx

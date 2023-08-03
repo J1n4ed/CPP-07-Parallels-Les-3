@@ -40,7 +40,7 @@ int main(int argc, char** argv)
 	clock::duration time_elapsed;
 	std::mt19937 rng;
 	std::uniform_int_distribution<int> dist(1, 9);
-	const int size = 100;
+	const int size = 10;
 
 	// std::cout.precision(4);
 
@@ -93,22 +93,39 @@ int main(int argc, char** argv)
 
 	std::cout << "\nExecuted. Time elapsed: " << time_elapsed.count() << "ms";
 
-	// -------- executing custom for_each
+	// -------- executing custom for_each in async mode
 
-	std::cout << "\n\nExecuting homework example for_each...\n";
+	std::cout << "\n\nExecuting homework example for_each_async...\n";
 
 	time_start = clock::now();
 
 	std::cout << "Vector:\n";
-	jinx::for_each(vector.begin(), vector.end(), dummy_f_i);
+	jinx::for_each_async(vector.begin(), vector.end(), dummy_f_i);
 	std::cout << '\n';
 	std::cout << "List:\n";
-	jinx::for_each(list.begin(), list.end(), dummy_f_d);
+	jinx::for_each_async(list.begin(), list.end(), dummy_f_d);
 
 	time_end = clock::now();
 	time_elapsed = time_end - time_start;
 
 	std::cout << "\nExecuted. Time elapsed: " << time_elapsed.count() << "ms";	
+
+	// -------- executing custom for_each in async mode
+
+	std::cout << "\n\nExecuting homework example for_each_deffered...\n";
+
+	time_start = clock::now();
+
+	std::cout << "Vector:\n";
+	jinx::for_each_deffered(vector.begin(), vector.end(), dummy_f_i);
+	std::cout << '\n';
+	std::cout << "List:\n";
+	jinx::for_each_deffered(list.begin(), list.end(), dummy_f_d);
+
+	time_end = clock::now();
+	time_elapsed = time_end - time_start;
+
+	std::cout << "\nExecuted. Time elapsed: " << time_elapsed.count() << "ms";
 
 	// exit
 
